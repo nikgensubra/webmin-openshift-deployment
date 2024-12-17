@@ -1,0 +1,30 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: webmin
+  labels:
+    app: webmin
+spec:
+  replicas: 1
+  selector:
+    app: webmin
+  template:
+    metadata:
+      labels:
+        app: webmin
+    spec:
+      containers:
+      - name: webmin
+        image: <your-registry>/webmin:openshift  # Sostituisci con il tuo repository
+        ports:
+        - containerPort: 10000
+        volumeMounts:
+        - name: webmin-data
+          mountPath: /etc/webmin
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1001
+      volumes:
+      - name: webmin-data
+        persistentVolumeClaim:
+          claimName: webmin-pvc
